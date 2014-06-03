@@ -72,7 +72,7 @@ int main(int argsNum, char** args)
   const int arrBranchbonusReg[] = {0, 1, 1, 3, 4, 1, 6, 7, 8};
   const int arrBranchbonusMem[] = {1, 2, 3, 4, 5};
 
-  const char *inputFileNames[] = {"Branchhazard.txt", "InstrIn.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt"};
+  const char *inputFileNames[] = {"BranchHazard.txt", "InstrIn.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt"};
   const char *outputFileNames[] = {"BranchhazardOut.txt", "InstrInOut.txt", "GeneralOut.txt", "DatahazardOut.txt", "LwhazardOut.txt", "BranchbonusOut.txt"};
   const int *arrRegs[] = {(int*)arrBranchhazardReg, (int*)arrInstrInReg, (int*)arrGeneralReg, (int*)arrDatahazardReg, (int*)arrLwhazardReg, (int*)arrBranchbonusReg};
   const int *arrMems[] = {(int*)arrBranchhazardMem, (int*)arrInstrInMem, (int*)arrGeneralMem, (int*)arrDatahazardMem, (int*)arrLwhazardMem, (int*)arrBranchhazardMem};
