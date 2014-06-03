@@ -61,7 +61,7 @@ void CPU::execute()
   {
     if(DEBUG && clock_cycle > 10) // preserve inf loop
       break;
-    
+
     // 5 pipeline stages
     IF();
     ID();
@@ -163,8 +163,56 @@ void CPU::ID()
       printf("check control hazard\n");
       printf("type: %d, ReadData0: %d, ReadData1: %d\n", type, ReadData0, ReadData1);
     }
-    if((type == InstType::brType && ReadData0 == ReadData1) || (type == InstType::brneType && ReadData0 != ReadData1))
+    bool branchStall = false;
+    if((type == InstType::brType) || (type == InstType::brneType))
+    { // not cal yet, need to stall here
+      Instruction pExInst(id_ex->getPre(ID_EX::INSTRUCTION));
+      if(pExInst.getType() == InstType::RType && (rs == id_ex->getPre(ID_EX::Rd) || rt == id_ex->getPre(ID_EX::Rd)))
+      {
+        if(DEBUG)
+        {
+          printf("branch stalling\n");
+        }
+        if_id->setNew(IF_ID::INSTRUCTION, pInst->getRaw());
+        if_id->setNew(IF_ID::PC, if_id->getPre(IF_ID::PC));
+        pInst->clear();
+        PC = prePC;
+        ReadData0 = ReadData1 = sign_ext = rs = rt = rd = 0;
+        id_ex->csNew->clear();
+        branchStall = true;
+      }
+      else
+      { // do internal forward here, too
+        if(mem_wb->csPre->getBitSignal(ControlSignal::RegWrite) &&
+           mem_wb->getPre(MEM_WB::Dst) != 0)
+        {
+          if(DEBUG)
+          {
+            printf("enter detect mem hazard detection\n");
+          }
+          if(mem_wb->getPre(MEM_WB::Dst) == rs)
+            ReadData0 = mem_wb->getPre(MEM_WB::ALUout);
+          else if(mem_wb->getPre(MEM_WB::Dst) == rt)
+            ReadData1 = mem_wb->getPre(MEM_WB::ALUout);
+        }
+
+        if(ex_mem->csPre->getBitSignal(ControlSignal::RegWrite) &&
+           ex_mem->getPre(EX_MEM::Rt) != 0 )
+        {
+          if(DEBUG)
+          {
+            printf("enter detect ex data hazard\n");
+          }
+          if(ex_mem->getPre(EX_MEM::Rt) == rs)
+            ReadData0 = ex_mem->getPre(EX_MEM::ALUout);
+          else if(ex_mem->getPre(EX_MEM::Rt) == rt)
+            ReadData1 = ex_mem->getPre(EX_MEM::ALUout);
+        }
+      }
+    }
+    if(!branchStall && (type == InstType::brType && ReadData0 == ReadData1) || (type == InstType::brneType && ReadData0 != ReadData1))
     {
+      
       if_id->setNew(IF_ID::INSTRUCTION, 0);
       PC = preCalPC;
     }

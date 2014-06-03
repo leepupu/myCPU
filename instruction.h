@@ -28,6 +28,7 @@ public:
     int getITypeImmediate();
     int getJTypeImmediate();
     int getRaw();
+    void clear();
 private:
     int inst;
 };

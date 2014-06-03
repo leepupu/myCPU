@@ -106,7 +106,10 @@ int Instruction::getITypeImmediate()
     return ( inst & ( (1 << 16) - 1 ) );
 }
 
-
+void Instruction::clear()
+{
+    inst = 0;
+}
 
 
 
