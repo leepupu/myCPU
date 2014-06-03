@@ -31,6 +31,11 @@ CPU::~CPU()
 void CPU::reset()
 {
   PC = prePC = 0;
+  if(this->pProgram != NULL)
+  {
+    delete this->pProgram;
+    this->pProgram = NULL;
+  }
   delete if_id;
   delete id_ex;
   delete ex_mem;
@@ -166,6 +171,7 @@ void CPU::ID()
     bool branchStall = false;
     if((type == InstType::brType) || (type == InstType::brneType))
     { // not cal yet, need to stall here
+      // Bonus, stall first, than internal forwarding
       Instruction pExInst(id_ex->getPre(ID_EX::INSTRUCTION));
       if(pExInst.getType() == InstType::RType && (rs == id_ex->getPre(ID_EX::Rd) || rt == id_ex->getPre(ID_EX::Rd)))
       {
@@ -188,7 +194,7 @@ void CPU::ID()
         {
           if(DEBUG)
           {
-            printf("enter detect mem hazard detection\n");
+            printf("Control hazard detection, enter detect mem hazard detection\n");
           }
           if(mem_wb->getPre(MEM_WB::Dst) == rs)
             ReadData0 = mem_wb->getPre(MEM_WB::ALUout);
@@ -201,7 +207,7 @@ void CPU::ID()
         {
           if(DEBUG)
           {
-            printf("enter detect ex data hazard\n");
+            printf("Control hazard detection, enter detect ex data hazard\n");
           }
           if(ex_mem->getPre(EX_MEM::Rt) == rs)
             ReadData0 = ex_mem->getPre(EX_MEM::ALUout);

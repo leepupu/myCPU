@@ -40,7 +40,7 @@ void unitTestControlSignal()
 
 int main(int argsNum, char** args)
 {
-  freopen("myoutput.txt", "w", stdout);
+  //freopen("myoutput.txt", "w", stdout);
   if(DEBUG && 0)
   {
     int num = (-1 - ((1 << 26)-1));
@@ -72,10 +72,11 @@ int main(int argsNum, char** args)
   const int arrBranchbonusReg[] = {0, 1, 1, 3, 4, 1, 6, 7, 8};
   const int arrBranchbonusMem[] = {1, 2, 3, 4, 5};
 
-  const char *inputFileNames[] = {"BranchHazard.txt", "InstrIn.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt"};
-  const char *outputFileNames[] = {"BranchhazardOut.txt", "InstrInOut.txt", "GeneralOut.txt", "DatahazardOut.txt", "LwhazardOut.txt", "BranchbonusOut.txt"};
-  const int *arrRegs[] = {(int*)arrBranchhazardReg, (int*)arrInstrInReg, (int*)arrGeneralReg, (int*)arrDatahazardReg, (int*)arrLwhazardReg, (int*)arrBranchbonusReg};
-  const int *arrMems[] = {(int*)arrBranchhazardMem, (int*)arrInstrInMem, (int*)arrGeneralMem, (int*)arrDatahazardMem, (int*)arrLwhazardMem, (int*)arrBranchhazardMem};
+  const char *inputFileNames[] = {"Branchhazard.txt", "InstrIn.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt"};
+  //const char *outputFileNames[] = {"BranchhazardOut.txt", "InstrInOut.txt", "GeneralOut.txt", "DatahazardOut.txt", "LwhazardOut.txt", "BranchbonusOut.txt"};
+  const char *outputFileNames[] = {"branchResult.txt", "InstrInOut.txt", "genResult.txt", "dataResult.txt", "loadResult.txt", "bonusResult.txt"};
+  const int *const arrRegs[] = {arrBranchhazardReg, arrInstrInReg, arrGeneralReg, arrDatahazardReg, arrLwhazardReg, arrBranchbonusReg};
+  const int *const arrMems[] = {arrBranchhazardMem, arrInstrInMem, arrGeneralMem, arrDatahazardMem, arrLwhazardMem, arrBranchhazardMem};
 
   const int programNum = 6;
 
@@ -95,6 +96,7 @@ int main(int argsNum, char** args)
       fprintf(stderr, "ERROR AT CHECK %s\n", outputFileNames[i]);
     //assert(myCPU.checkStatus(arrRegs[i], arrMems[i]));
     myCPU.reset();
+    // delete pP;
   }
   // pP = new Program("InstrIn.txt");
   // pP2 = new Program("General.txt");

@@ -8,7 +8,11 @@
 
 
 //new 0 pre 1
+//every pipeline register need to remember data before and after stages
 
+/**
+ * Base class of pipeline registers
+ */
 class PipelineReg
 {
 public:
@@ -24,6 +28,7 @@ public:
   void dump();
   bool isClear();
 protected:
+    // pipeline register dump helper
     class DumpHelper
     {
       public:
