@@ -72,13 +72,12 @@ int main(int argsNum, char** args)
   const int arrBranchbonusReg[] = {0, 1, 1, 3, 4, 1, 6, 7, 8};
   const int arrBranchbonusMem[] = {1, 2, 3, 4, 5};
 
-  const char *inputFileNames[] = {"Branchhazard.txt", "InstrIn.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt"};
-  //const char *outputFileNames[] = {"BranchhazardOut.txt", "InstrInOut.txt", "GeneralOut.txt", "DatahazardOut.txt", "LwhazardOut.txt", "BranchbonusOut.txt"};
-  const char *outputFileNames[] = {"branchResult.txt", "InstrInOut.txt", "genResult.txt", "dataResult.txt", "loadResult.txt", "bonusResult.txt"};
-  const int *const arrRegs[] = {arrBranchhazardReg, arrInstrInReg, arrGeneralReg, arrDatahazardReg, arrLwhazardReg, arrBranchbonusReg};
-  const int *const arrMems[] = {arrBranchhazardMem, arrInstrInMem, arrGeneralMem, arrDatahazardMem, arrLwhazardMem, arrBranchhazardMem};
+  const char *inputFileNames[] = {"Branchhazard.txt", "General.txt", "Datahazard.txt", "Lwhazard.txt", "Branchbonus.txt", "InstrIn.txt"};
+  const char *outputFileNames[] = {"branchResult.txt", "genResult.txt", "dataResult.txt", "loadResult.txt", "bonusResult.txt", "InstrInOut.txt"};
+  const int *const arrRegs[] = {arrBranchhazardReg, arrGeneralReg, arrDatahazardReg, arrLwhazardReg, arrBranchbonusReg, arrInstrInReg};
+  const int *const arrMems[] = {arrBranchhazardMem, arrGeneralMem, arrDatahazardMem, arrLwhazardMem, arrBranchhazardMem, arrInstrInMem};
 
-  const int programNum = 6;
+  const int programNum = 5; // ignore test input: InstIn.txt
 
   // build env
   DataMemory mem;
@@ -95,6 +94,7 @@ int main(int argsNum, char** args)
     if(!myCPU.checkStatus(arrRegs[i], arrMems[i]))
       fprintf(stderr, "ERROR AT CHECK %s\n", outputFileNames[i]);
     //assert(myCPU.checkStatus(arrRegs[i], arrMems[i]));
+    // using assert while develop
     myCPU.reset();
     // delete pP;
   }

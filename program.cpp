@@ -11,7 +11,7 @@ Program::Program(const char *file_name)
   {
     unsigned int new_ins = 0;
     for(int i=0;i<32;i++)
-      new_ins |= (1 & ins[i]) << (31-i);
+      new_ins |= (1 & (ins[i] - '0')) << (31 - i);
     if(DEBUG)
       printf("decode instruction: %u, at line: %lu\n", new_ins, instructions.size());
     instructions.push_back(new_ins);

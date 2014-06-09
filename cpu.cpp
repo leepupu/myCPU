@@ -28,6 +28,9 @@ CPU::~CPU()
   delete mem_wb;
 }
 
+/**
+ * reset all pipeline register
+ */
 void CPU::reset()
 {
   PC = prePC = 0;
@@ -183,7 +186,7 @@ void CPU::ID()
         if_id->setNew(IF_ID::PC, if_id->getPre(IF_ID::PC));
         pInst->clear();
         PC = prePC;
-        ReadData0 = ReadData1 = sign_ext = rs = rt = rd = 0;
+        //ReadData0 = ReadData1 = sign_ext = rs = rt = rd = 0;
         id_ex->csNew->clear();
         branchStall = true;
       }
@@ -390,16 +393,12 @@ void CPU::EX()
     ex_mem->csNew->copy(cs);
   }
 
-  if(id_ex->csPre->getSignal()) // not NOP
-  {
-    ex_mem->setNew(EX_MEM::Rt, rt);
-    ex_mem->setNew(EX_MEM::ALUout, ALUout);
-    ex_mem->setNew(EX_MEM::WriteData, write_data);
-  }
-  else if(DEBUG)
-  {
-    printf("NOP IN EX!\n");
-  }
+  //if(id_ex->csPre->getSignal()) // not NOP// no need to clean when stall
+  
+  ex_mem->setNew(EX_MEM::Rt, rt);
+  ex_mem->setNew(EX_MEM::ALUout, ALUout);
+  ex_mem->setNew(EX_MEM::WriteData, write_data);
+
   
   if(DEBUG)
   {
