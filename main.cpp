@@ -91,19 +91,13 @@ int main(int argsNum, char** args)
     pP = new Program(inputFileNames[i]);
     myCPU.setProgram(pP);
     myCPU.execute();
+    // self test output
     if(!myCPU.checkStatus(arrRegs[i], arrMems[i]))
       fprintf(stderr, "ERROR AT CHECK %s\n", outputFileNames[i]);
     //assert(myCPU.checkStatus(arrRegs[i], arrMems[i]));
     // using assert while develop
     myCPU.reset();
-    // delete pP;
   }
-  // pP = new Program("InstrIn.txt");
-  // pP2 = new Program("General.txt");
-  // pP3 = new Program("Datahazard.txt");
-  // pP = new Program("Datahazard.txt");
-  // pP = new Program("Lwhazard.txt");
-
 
 }
 
