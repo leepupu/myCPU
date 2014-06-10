@@ -182,6 +182,7 @@ void CPU::ID()
         {
           printf("branch stalling\n");
         }
+        printf("Control hazard detection, stalling...\n");
         if_id->setNew(IF_ID::INSTRUCTION, pInst->getRaw());
         if_id->setNew(IF_ID::PC, if_id->getPre(IF_ID::PC));
         pInst->clear();
@@ -200,9 +201,15 @@ void CPU::ID()
             printf("Control hazard detection, enter detect mem hazard detection\n");
           }
           if(mem_wb->getPre(MEM_WB::Dst) == rs)
+          {
             ReadData0 = mem_wb->getPre(MEM_WB::ALUout);
+            fprintf(stderr, "Control hazard's data hazard! forward mem_wb.ALUout to ReadData0!\n");
+          }
           else if(mem_wb->getPre(MEM_WB::Dst) == rt)
+          {
             ReadData1 = mem_wb->getPre(MEM_WB::ALUout);
+            fprintf(stderr, "Control hazard's data hazard! forward mem_wb.ALUout to ReadData1!\n");
+          }
         }
 
         if(ex_mem->csPre->getBitSignal(ControlSignal::RegWrite) &&
@@ -213,9 +220,15 @@ void CPU::ID()
             printf("Control hazard detection, enter detect ex data hazard\n");
           }
           if(ex_mem->getPre(EX_MEM::Rt) == rs)
+          {
             ReadData0 = ex_mem->getPre(EX_MEM::ALUout);
+            fprintf(stderr, "Control hazard's data hazard! forward ex_mem.ALUout to ReadData0!\n");
+          }
           else if(ex_mem->getPre(EX_MEM::Rt) == rt)
+          {
             ReadData1 = ex_mem->getPre(EX_MEM::ALUout);
+            fprintf(stderr, "Control hazard's data hazard! forward ex_mem.ALUout to ReadData1!\n");
+          }
         }
       }
     }
@@ -278,9 +291,15 @@ void CPU::EX()
       printf("enter detect mem hazard detection\n");
     }
     if(mem_wb->getPre(MEM_WB::Dst) == pre_rs)
+    {
       rd0 = mem_wb->getPre(MEM_WB::ALUout);
+      fprintf(stderr, "data hazard! forward mem_wb.ALUout to rd0!\n");
+    }
     else if(mem_wb->getPre(MEM_WB::Dst) == pre_rt)
+    {
       rd1 = mem_wb->getPre(MEM_WB::ALUout);
+      fprintf(stderr, "data hazard! forward mem_wb.ALUout to rd1!\n");
+    }
     if(DEBUG)
       printf("rd0: %d, rd1: %d\n", rd0, rd1);
   }
@@ -293,15 +312,22 @@ void CPU::EX()
       printf("enter detect ex data hazard\n");
     }
     if(ex_mem->getPre(EX_MEM::Rt) == pre_rs)
+    {
       rd0 = ex_mem->getPre(EX_MEM::ALUout);
+      fprintf(stderr, "data hazard! forward ex_mem.ALUout to rd0!\n");
+    }
     else if(ex_mem->getPre(EX_MEM::Rt) == pre_rt)
+    {
       rd1 = ex_mem->getPre(EX_MEM::ALUout);
+      fprintf(stderr, "data hazard! forward ex_mem.ALUout to rd1!\n");
+    }
   }
 
   Instruction preInst = Instruction(if_id->getPre(IF_ID::INSTRUCTION));
   if(cs->getBitSignal(ControlSignal::MemRead) &&
          (pre_rt == preInst.getRs() || pre_rt == preInst.getRt())) // stall
   {
+    fprintf(stderr, "data hazard! load hazard! Stalling...\n");
     if(DEBUG)
       printf("stalling!\n");
     stall = true;
