@@ -112,14 +112,21 @@ void PipelineReg::DumpHelper::dump(PipelineReg* pReg)
               else
                 outstr[31-i] = '0';
             printf("%s\t%s\n",rname, outstr);
+            continue;
+        }
+
+        if(strcmp(rname, "QAQ") == 0)
+        {
+            printf("%s\t", ( (*isRd)?"Rd":"Rt" ) );
+            *isRd = 0;
         }
         else
         {
             printf("%s\t", rname);
-            if(strlen(rname) <= 6)
-                printf("\t");
-            printf("%d\n", pReg->getPre(*(indexs+i)));
         }
+        if(strlen(rname) <= 6)
+            printf("\t");
+        printf("%d\n", pReg->getPre(*(indexs+i)));
     }
     if(isDumpCs)
     {

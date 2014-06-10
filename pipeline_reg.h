@@ -27,11 +27,13 @@ public:
   ControlSignal* csNew;
   void dump();
   bool isClear();
+  int isRd;
 protected:
     // pipeline register dump helper
     class DumpHelper
     {
       public:
+        int* isRd;
         const char* name;
         bool isDumpCs;
         const char **names;
@@ -105,8 +107,10 @@ public:
     ignoreIdx = PC;
     pDumpHelper->name = "EX/MEM";
     pDumpHelper->isDumpCs = true;
-    static const char *names[] = {"ALUout", "WriteData", "Rt"};
+    static const char *names[] = {"ALUout", "WriteData", "QAQ"}; // dynamic name to print
     static const int indexs[] = {ALUout, WriteData, Rt};
+    isRd = 0;
+    pDumpHelper->isRd = &isRd;
     pDumpHelper->setup(3, 
       (const char**)names,
       indexs,

@@ -397,6 +397,7 @@ void CPU::EX()
   if(cs->getBitSignal(ControlSignal::RegDst))
   {
     rt = id_ex->getPre(ID_EX::Rd);
+    ex_mem->isRd = 1;
   }
   else
   {
