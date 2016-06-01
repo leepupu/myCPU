@@ -63,10 +63,13 @@ void CPU::setProgram(Program *pP)
 
 void CPU::execute()
 {
+
   if(this->pProgram == NULL)
     return;
   for(int clock_cycle = 1 ; (clock_cycle == 1) || !isFinish() ; clock_cycle++)
   {
+    if(DEBUG)
+      printf("execute %d\n", clock_cycle);
     if(DEBUG && clock_cycle > 10) // preserve inf loop
       break;
 
@@ -112,9 +115,10 @@ void CPU::ID()
     Instruction *pInst;
     pInst = new Instruction(if_id->getPre(IF_ID::INSTRUCTION));
     int type = pInst->getType();
+    int op   = pInst->getOp();
 
     if(pInst->getRaw() != 0) // handle NOP
-      id_ex->csNew->setType(type);
+      id_ex->csNew->setType(type, op);
     else
       id_ex->csNew->clear();
 
@@ -153,6 +157,7 @@ void CPU::ID()
       case(InstType::lwType):
       case(InstType::brType):
       case(InstType::brneType):
+      case(InstType::IType):
         sign_ext = pInst->getITypeImmediate();
         break;
       default:
@@ -271,6 +276,7 @@ void CPU::EX()
   ControlSignal* cs = id_ex->csPre;
   int funct = pInst->getFunct();
   int ALUOp0 = cs->getBitSignal(ControlSignal::ALUOp0), ALUOp1 = cs->getBitSignal(ControlSignal::ALUOp1);
+
   int realALUOp = ALUCtrl(ALUOp0, ALUOp1, funct);
   bool zero_flag = (rd0 == rd1);
   bool stall = false;
@@ -338,12 +344,7 @@ void CPU::EX()
     PC = prePC;
   }
 
-  if(DEBUG)
-  {
-      printf("rd0: %d, rd1: %d\n", rd0, rd1);
-      printf("ALUOp0: %d, ALUOp1: %d, sign_ext: %d\n", ALUOp0, ALUOp1, sign_ext);
-      printf("CS.ALUSrc: %d, funct: %d, realALUOp: %d\n", id_ex->csPre->getBitSignal(ControlSignal::ALUSrc), funct, realALUOp);
-  }
+  
   if(cs->getBitSignal(ControlSignal::ALUSrc)) // I-type MUX
   {
     rd1 = sign_ext;
@@ -352,7 +353,12 @@ void CPU::EX()
   {
       write_data = rd1;
   }
-
+  if(DEBUG)
+  {
+      printf("rd0: %d, rd1: %d\n", rd0, rd1);
+      printf("ALUOp0: %d, ALUOp1: %d, sign_ext: %d\n", ALUOp0, ALUOp1, sign_ext);
+      printf("CS.ALUSrc: %d, funct: %d, realALUOp: %d\n", id_ex->csPre->getBitSignal(ControlSignal::ALUSrc), funct, realALUOp);
+  }
   // i am ALU~
   if(!cs->getBitSignal(ControlSignal::Branch) && !cs->getBitSignal(ControlSignal::BranchNE))
   {
@@ -410,13 +416,17 @@ void CPU::EX()
 
   if((cs->getBitSignal(ControlSignal::Branch) || cs->getBitSignal(ControlSignal::BranchNE)))
   {
-    ex_mem->csNew->clear();
-    rt = 0;
-    ALUout = 0;
-    write_data = 0;
+    // ex_mem->csNew->clear();
+    // rt = 0;
+    // ALUout = 0;
+    ALUout = rd0 - rd1;
+    write_data = ex_mem->getPre(EX_MEM::ALUout);
+    ex_mem->csNew->copy(cs);
+
   }
   else
   {
+    write_data = ALUout;
     ex_mem->csNew->copy(cs);
   }
 
@@ -514,6 +524,8 @@ int CPU::ALUCtrl(int ALUop0, int ALUop1, int funct)
   rtn |= (f0 | f3) & ALUop1;
   rtn |= (!f2 | !ALUop1) << 1;
   rtn |= ( (f1 & ALUop1) | ALUop0 ) << 2;
+  if (ALUop1 == 1 && ALUop0 == 1)
+    return 0x1;
   return rtn;
 }
 
