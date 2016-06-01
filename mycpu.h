@@ -9,8 +9,9 @@ namespace InstType
   static const int brType = 2;
   static const int swType = 3;
   static const int brneType = 4;
-  static const int UnknowType = 5;
-  static const char *decodeName[] = {"RType", "lwType", "swType", "branchType", "brneType", "UnknowType"};
+  static const int IType = 5;
+  static const int UnknowType = 6;
+  static const char *decodeName[] = {"RType", "lwType", "swType", "branchType", "brneType", "IType", "UnknowType"};
   const char* decodeType(int);
 }
 
