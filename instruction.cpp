@@ -23,6 +23,8 @@ int Instruction::getType()
         return InstType::brneType;
     else if(op == 43)
         return InstType::swType;
+    else if((op >> 3) == 0x1)
+        return InstType::IType;
     else
         return InstType::UnknowType;
 }
