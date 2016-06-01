@@ -29,7 +29,7 @@ public:
   int mask(int);
   int getSignal();
   void setSignal(int);
-  void setType(int);
+  void setType(int, int);
   bool getBitSignal(int);
   void clear();
   void copy(ControlSignal*);

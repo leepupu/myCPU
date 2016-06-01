@@ -1,6 +1,6 @@
 #include "control_signal.h"
 
-void ControlSignal::setType(int type)
+void ControlSignal::setType(int type, int op)
 {
   switch(type)
   {
@@ -19,6 +19,11 @@ void ControlSignal::setType(int type)
     case InstType::brneType:
       csignal = (mask(BranchNE) | mask(ALUOp0));
       break;
+    case InstType::IType:
+      csignal = (mask(ALUSrc) | mask(RegWrite) );
+      if (op == 13)
+        csignal |= (mask(ALUOp0) | mask(ALUOp1));
+
   }
 }
 
