@@ -9,6 +9,8 @@ Program::Program(const char *file_name)
   char ins[50] ={0};
   while(fin >> ins)
   {
+    if(DEBUG)
+      printf("got line: %s\n", ins);
     unsigned int new_ins = 0;
     for(int i=0;i<32;i++)
       new_ins |= (1 & (ins[i] - '0')) << (31 - i);

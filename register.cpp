@@ -13,9 +13,10 @@ Register::Register(const int* arr)
 
 void Register::init()
 {
+    const int init_val[] = {0, 8, 7, 6, 3, 9, 5, 2, 7};
     for(int i=0;i<=8;i++)
-        data[i] = i;
-    data[5] = 1;
+        data[i] = init_val[i];
+    // data[5] = 1;
 }
 
 bool Register::compare(const int* arr)

@@ -18,8 +18,9 @@ DataMemory::~DataMemory()
 
 void DataMemory::init()
 {
+    const int init_val[] = {5, 5, 6, 8, 8};
     for(int i=1;i<=5;i++)
-        data[(i-1)*4] = i;
+        data[(i-1)*4] = init_val[i-1];
 }
 
 bool DataMemory::compare(const int* arr)
